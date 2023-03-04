@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iCalendar 日程批量生成</title>
+    <link rel="icon" href="./favicon.ico">
+    <style>
+        body {
+            padding: 10px;
+            margin: 0px auto;
+            max-width: 800px;
+        }
+
+        #txtInput {
+            height: 200px;
+            width: 60%;
+            display: block;
+            resize: none;
+        }
+
+        a {
+            color: rgb(44, 140, 172);
+        }
+
+        button {
+            margin: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>iCalendar 日程批量生成</h1>
+    <p>
+        请在下面输入事件，一行一个，
+        <br>
+        格式是 “1-15 某纪念日” ，表示每年的一月十五是某纪念日。
+    </p>
+    <textarea id="txtInput">Javascript 尚未加载完成</textarea>
+    <p>
+        标题统一后缀：<input id="txtTitleSuffix" type="text" maxlength="30">
+        <br>
+        生成多少年的农历事件：<input id="txtYearCount" type="number" min="1" max="50" value="5">
+        <br>
+        <input id="checkAddLunarDateAfterTitle" type="checkbox">在标题后标注农历日期（不标注就只写在事件描述内）
+    </p>
+    <p>
+        <button id="butGenSolar">生成公历文件</button>
+        <br>
+        <button id="butGenLunar">生成农历文件</button>
+        <br>
+        <a href="https://github.com/chenbuyi2019/ics-chinese-calendar" target="_blank">查看源码</a>
+    </p>
+    <p>
+        如果你要导入到 iOS 的日历 APP ，建议直接在 Safari 访问本网页，点击生成之后就会直接弹出导入界面。
+        <br>
+        如遇到农历某月30日不存在的情况，生成的事件会安置在那个月的29日。
+    </p>
+    <script src="./solarlunar.min.js"></script>
+    <script src="./ics-chinese-calendar.js"></script>
+</body>
+
+</html>
