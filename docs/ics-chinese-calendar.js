@@ -21,6 +21,7 @@ class VEvent {
         this.Summary = summary;
         this.Date = dt;
         this.UID = (Math.random() * 99999559 + 10055014).toFixed() + dt.getTime().toFixed();
+        this.Other = "";
     }
     static cleanString(s) {
         return s.replaceAll("\t", " ").replaceAll(/[\r\n]+/g, " ").replaceAll(";", "_").trim();
@@ -38,11 +39,16 @@ class VEvent {
         if (this.YearlyRepeat) {
             out += `RRULE:FREQ=YEARLY;INTERVAL=1;\n`;
         }
+        const other = this.Other.trim();
+        if (other.length > 0) {
+            out += other + `\n`;
+        }
         out += `END:VEVENT`;
         return out;
     }
 }
 const txtInput = document.getElementById('txtInput');
+const txtCustomIcs = document.getElementById('txtCustomIcs');
 const txtYearCount = document.getElementById('txtYearCount');
 const butGenSolar = document.getElementById('butGenSolar');
 const butGenLunar = document.getElementById('butGenLunar');
@@ -125,6 +131,7 @@ function processICS(useLunarCalendar) {
                     throw '事件标题空白或太长';
                 }
                 text += suffix;
+                const customIcs = txtCustomIcs.value.trim();
                 if (useLunarCalendar) {
                     const dateZh = `${solarlunar.toChinaMonth(month)}${solarlunar.toChinaDay(date)}`;
                     if (addLunarDateAfterTitle) {
@@ -144,6 +151,7 @@ function processICS(useLunarCalendar) {
                         if (!addLunarDateAfterTitle) {
                             ev.Description = dateZh;
                         }
+                        ev.Other = customIcs;
                         ical.Events.push(ev);
                     }
                 }
@@ -153,6 +161,7 @@ function processICS(useLunarCalendar) {
                     dt.setFullYear(thisYear, month - 1, date);
                     const ev = new VEvent(text, dt);
                     ev.YearlyRepeat = true;
+                    ev.Other = customIcs;
                     ical.Events.push(ev);
                 }
             }

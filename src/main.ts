@@ -1,4 +1,5 @@
 const txtInput = document.getElementById('txtInput') as HTMLTextAreaElement
+const txtCustomIcs = document.getElementById('txtCustomIcs') as HTMLTextAreaElement
 const txtYearCount = document.getElementById('txtYearCount') as HTMLInputElement
 const butGenSolar = document.getElementById('butGenSolar') as HTMLButtonElement
 const butGenLunar = document.getElementById('butGenLunar') as HTMLButtonElement
@@ -67,6 +68,7 @@ function processICS(useLunarCalendar: boolean): void {
                 let text = mc[3].trim()
                 if (text.length < 1 || text.length > 99) { throw '事件标题空白或太长' }
                 text += suffix
+                const customIcs = txtCustomIcs.value.trim()
                 if (useLunarCalendar) {
                     const dateZh = `${solarlunar.toChinaMonth(month)}${solarlunar.toChinaDay(date)}`
                     if (addLunarDateAfterTitle) {
@@ -82,6 +84,7 @@ function processICS(useLunarCalendar: boolean): void {
                         if (!addLunarDateAfterTitle) {
                             ev.Description = dateZh
                         }
+                        ev.Other = customIcs
                         ical.Events.push(ev)
                     }
                 } else {
@@ -90,6 +93,7 @@ function processICS(useLunarCalendar: boolean): void {
                     dt.setFullYear(thisYear, month - 1, date)
                     const ev = new VEvent(text, dt)
                     ev.YearlyRepeat = true
+                    ev.Other = customIcs
                     ical.Events.push(ev)
                 }
             } catch (error) {

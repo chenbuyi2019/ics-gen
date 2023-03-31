@@ -13,11 +13,18 @@
             max-width: 800px;
         }
 
-        #txtInput {
-            height: 200px;
+        textarea {
             width: 60%;
             display: block;
             resize: none;
+        }
+
+        #txtInput {
+            height: 200px;
+        }
+
+        #txtCustomIcs {
+            height: 100px;
         }
 
         a {
@@ -39,6 +46,12 @@
     </p>
     <textarea id="txtInput">Javascript 尚未加载完成</textarea>
     <p>
+        自定义 ics 事件字段：
+        <textarea id="txtCustomIcs">BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-PT12H
+DESCRIPTION:Default Mozilla Description
+END:VALARM</textarea>
         标题统一后缀：<input id="txtTitleSuffix" type="text" maxlength="30">
         <br>
         生成多少年的农历事件：<input id="txtYearCount" type="number" min="1" max="50" value="5">
