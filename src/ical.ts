@@ -86,9 +86,11 @@ class VEvent {
         let out = `BEGIN:VEVENT\nUID:${VEvent.cleanString(this.UID)}\n`
         out += `SUMMARY:${VEvent.cleanString(this.Summary)}\n`
         out += `DESCRIPTION:${VEvent.cleanString(this.Description)}\n`
-        let dt = VEvent.getDateString(this.Date)
-        out += `DTSTART;VALUE=DATE:${dt}\n`
-        out += `DTEND;VALUE=DATE:${dt}\n`
+        out += `DTSTART;VALUE=DATE:${VEvent.getDateString(this.Date)}\n`
+        let endDt = new Date()
+        endDt.setTime(this.Date.getTime())
+        endDt.setDate(endDt.getDate() + 1)
+        out += `DTEND;VALUE=DATE:${VEvent.getDateString(endDt)}\n`
         if (this.YearlyRepeat) {
             out += `RRULE:FREQ=YEARLY;INTERVAL=1;\n`
         }
