@@ -18,10 +18,11 @@ class VEvent {
     constructor(summary, dt) {
         this.Description = '';
         this.YearlyRepeat = false;
+        this.NoticeTrigger = "";
         this.Summary = summary;
         this.Date = dt;
         this.UID = (Math.random() * 99999559 + 10055014).toFixed() + dt.getTime().toFixed();
-        this.Other = "";
+        this.Custom = "";
     }
     static cleanString(s) {
         return s.replaceAll("\t", " ").replaceAll(/[\r\n]+/g, " ").replaceAll(";", "_").trim();
@@ -41,7 +42,10 @@ class VEvent {
         if (this.YearlyRepeat) {
             out += `RRULE:FREQ=YEARLY;INTERVAL=1;\n`;
         }
-        const other = this.Other.trim();
+        if (this.NoticeTrigger.length > 0) {
+            out += `BEGIN:VALARM\nACTION:DISPLAY\nTRIGGER:${this.NoticeTrigger}\nDESCRIPTION:a\nEND:VALARM\n`;
+        }
+        const other = this.Custom.trim();
         if (other.length > 0) {
             out += other + `\n`;
         }
@@ -50,7 +54,7 @@ class VEvent {
     }
 }
 const txtInput = document.getElementById('txtInput');
-const txtCustomIcs = document.getElementById('txtCustomIcs');
+const listNotices = document.getElementById('listNotices');
 const txtYearCount = document.getElementById('txtYearCount');
 const butGenSolar = document.getElementById('butGenSolar');
 const butGenLunar = document.getElementById('butGenLunar');
@@ -95,6 +99,15 @@ function processICS(useLunarCalendar) {
         const usedText = [];
         const ical = new VCalendar();
         const bigMonths = [1, 3, 5, 7, 8, 10, 12];
+        const noticeHours = parseInt(listNotices.value);
+        let noticeTrigger = "";
+        if (isFinite(noticeHours)) {
+            let abs = Math.abs(noticeHours);
+            noticeTrigger = `PT${abs.toFixed()}H`;
+            if (noticeHours < 0) {
+                noticeTrigger = "-" + noticeTrigger;
+            }
+        }
         for (let index = 0; index < lines.length; index++) {
             const line = lines[index].trim();
             if (line.length < 1) {
@@ -133,11 +146,10 @@ function processICS(useLunarCalendar) {
                     throw '事件标题空白或太长';
                 }
                 text += suffix;
-                const customIcs = txtCustomIcs.value.trim();
                 if (useLunarCalendar) {
                     const dateZh = `${solarlunar.toChinaMonth(month)}${solarlunar.toChinaDay(date)}`;
                     if (addLunarDateAfterTitle) {
-                        text += `（${dateZh}）`;
+                        text += `(${dateZh})`;
                     }
                     if (usedText.includes(text)) {
                         throw '事件标题重复使用';
@@ -153,7 +165,7 @@ function processICS(useLunarCalendar) {
                         if (!addLunarDateAfterTitle) {
                             ev.Description = dateZh;
                         }
-                        ev.Other = customIcs;
+                        ev.NoticeTrigger = noticeTrigger;
                         ical.Events.push(ev);
                     }
                 }
@@ -163,7 +175,7 @@ function processICS(useLunarCalendar) {
                     dt.setFullYear(thisYear, month - 1, date);
                     const ev = new VEvent(text, dt);
                     ev.YearlyRepeat = true;
-                    ev.Other = customIcs;
+                    ev.NoticeTrigger = noticeTrigger;
                     ical.Events.push(ev);
                 }
             }
@@ -173,7 +185,7 @@ function processICS(useLunarCalendar) {
         }
         const ak = document.createElement('a');
         ak.href = `data:text/calendar;charset=utf-8,${encodeURIComponent(ical.toString())}`;
-        ak.download = `${((new Date).getTime() / 1000).toFixed()}.ics`;
+        ak.download = `${((new Date).getTime() / 1000 - 1682579000).toFixed()}${useLunarCalendar ? "_nongli" : ""}.ics`;
         ak.style.display = 'none';
         document.body.appendChild(ak);
         ak.click();

@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iCalendar 日程批量生成</title>
-    <link rel="icon" href="./favicon.ico">
+    <title>ics 年度日程批量生成</title>
     <style>
         body {
             padding: 10px;
@@ -38,32 +37,38 @@
 </head>
 
 <body>
-    <h1>iCalendar 日程批量生成</h1>
+    <h1>ics 年度日程批量生成</h1>
+    <p>制作：<a href="https://buyi.dev/" target="_blank">陈布衣</a></p>
     <p>
         请在下面输入事件，一行一个，
         <br>
         格式是 “1-15 某纪念日” ，表示每年的一月十五是某纪念日。
     </p>
-    <textarea id="txtInput">Javascript 尚未加载完成</textarea>
-    <p>
-        自定义 ics 事件字段：
-        <textarea id="txtCustomIcs">BEGIN:VALARM
-ACTION:DISPLAY
-TRIGGER:-PT12H
-DESCRIPTION:Default Mozilla Description
-END:VALARM</textarea>
-        标题统一后缀：<input id="txtTitleSuffix" type="text" maxlength="30">
+    <textarea id="txtInput">Javascript 尚未加载或运行出错</textarea>
+    <p style="line-height: 2;">
+        标题加后缀：<input id="txtTitleSuffix" type="text" maxlength="30">
+        <br>
+        提醒时间：
+        <select id="listNotices">
+            <option value="NaN">不提醒</option>
+            <option value="-15">前一天9点</option>
+            <option value="-12">前一天12点</option>
+            <option value="-4">前一天20点</option>
+            <option value="0">当天0点</option>
+            <option value="6">当天6点</option>
+            <option value="9">当天9点</option>
+            <option value="12">当天12点</option>
+        </select>
         <br>
         生成多少年的农历事件：<input id="txtYearCount" type="number" min="1" max="50" value="5">
         <br>
         <input id="checkAddLunarDateAfterTitle" type="checkbox">在标题后标注农历日期（不标注就只写在事件描述内）
     </p>
     <p>
-        <button id="butGenSolar">生成公历文件</button>
+        <button id="butGenSolar" style="margin-right: 1em;">生成公历</button>
+        <button id="butGenLunar">生成农历</button>
         <br>
-        <button id="butGenLunar">生成农历文件</button>
-        <br>
-        <a href="https://github.com/chenbuyi2019/ics-chinese-calendar" target="_blank">查看源码</a>
+        <a href="https://github.com/chenbuyi2019/ics-gen" target="_blank">查看源码</a>
     </p>
     <p>
         如果你要导入到 iOS 的日历 APP ，建议直接在 Safari 访问本网页，点击生成之后就会直接弹出导入界面。
@@ -71,7 +76,7 @@ END:VALARM</textarea>
         如遇到农历某月30日不存在的情况，生成的事件会安置在那个月的29日。
     </p>
     <script src="./solarlunar.min.js"></script>
-    <script src="./ics-chinese-calendar.js"></script>
+    <script src="./ics-gen.js"></script>
 </body>
 
 </html>

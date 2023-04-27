@@ -35,7 +35,7 @@ class VEvent {
         this.Summary = summary
         this.Date = dt
         this.UID = (Math.random() * 99999559 + 10055014).toFixed() + dt.getTime().toFixed()
-        this.Other = ""
+        this.Custom = ""
     }
 
     /**
@@ -64,9 +64,14 @@ class VEvent {
     YearlyRepeat: boolean = false
 
     /**
+     * 提醒时间，留空就是不提醒
+     */
+    NoticeTrigger:string = ""
+
+    /**
      * 自定义其他内容
      */
-    Other: string
+    Custom: string
 
     /**
      * 清理字符串内的奇怪字符
@@ -94,12 +99,14 @@ class VEvent {
         if (this.YearlyRepeat) {
             out += `RRULE:FREQ=YEARLY;INTERVAL=1;\n`
         }
-        const other = this.Other.trim()
+        if(this.NoticeTrigger.length > 0){
+            out += `BEGIN:VALARM\nACTION:DISPLAY\nTRIGGER:${this.NoticeTrigger}\nDESCRIPTION:a\nEND:VALARM\n`
+        }
+        const other = this.Custom.trim()
         if (other.length > 0) {
             out += other + `\n`
         }
         out += `END:VEVENT`
         return out
     }
-
 }

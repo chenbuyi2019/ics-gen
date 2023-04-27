@@ -1,5 +1,5 @@
 const txtInput = document.getElementById('txtInput') as HTMLTextAreaElement
-const txtCustomIcs = document.getElementById('txtCustomIcs') as HTMLTextAreaElement
+const listNotices = document.getElementById('listNotices') as HTMLSelectElement
 const txtYearCount = document.getElementById('txtYearCount') as HTMLInputElement
 const butGenSolar = document.getElementById('butGenSolar') as HTMLButtonElement
 const butGenLunar = document.getElementById('butGenLunar') as HTMLButtonElement
@@ -47,6 +47,13 @@ function processICS(useLunarCalendar: boolean): void {
         const usedText: string[] = []
         const ical = new VCalendar()
         const bigMonths = [1, 3, 5, 7, 8, 10, 12]
+        const noticeHours = parseInt(listNotices.value)
+        let noticeTrigger = ""
+        if (isFinite(noticeHours)) {
+            let abs = Math.abs(noticeHours)
+            noticeTrigger = `PT${abs.toFixed()}H`
+            if (noticeHours < 0) { noticeTrigger = "-" + noticeTrigger }
+        }
         for (let index = 0; index < lines.length; index++) {
             const line = lines[index].trim()
             if (line.length < 1) { continue }
@@ -68,11 +75,10 @@ function processICS(useLunarCalendar: boolean): void {
                 let text = mc[3].trim()
                 if (text.length < 1 || text.length > 99) { throw '事件标题空白或太长' }
                 text += suffix
-                const customIcs = txtCustomIcs.value.trim()
                 if (useLunarCalendar) {
                     const dateZh = `${solarlunar.toChinaMonth(month)}${solarlunar.toChinaDay(date)}`
                     if (addLunarDateAfterTitle) {
-                        text += `（${dateZh}）`
+                        text += `(${dateZh})`
                     }
                     if (usedText.includes(text)) { throw '事件标题重复使用' }
                     usedText.push(text)
@@ -84,7 +90,7 @@ function processICS(useLunarCalendar: boolean): void {
                         if (!addLunarDateAfterTitle) {
                             ev.Description = dateZh
                         }
-                        ev.Other = customIcs
+                        ev.NoticeTrigger = noticeTrigger
                         ical.Events.push(ev)
                     }
                 } else {
@@ -93,7 +99,7 @@ function processICS(useLunarCalendar: boolean): void {
                     dt.setFullYear(thisYear, month - 1, date)
                     const ev = new VEvent(text, dt)
                     ev.YearlyRepeat = true
-                    ev.Other = customIcs
+                    ev.NoticeTrigger = noticeTrigger
                     ical.Events.push(ev)
                 }
             } catch (error) {
@@ -102,7 +108,7 @@ function processICS(useLunarCalendar: boolean): void {
         }
         const ak = document.createElement('a')
         ak.href = `data:text/calendar;charset=utf-8,${encodeURIComponent(ical.toString())}`
-        ak.download = `${((new Date).getTime() / 1000).toFixed()}.ics`
+        ak.download = `${((new Date).getTime() / 1000 - 1682579000).toFixed()}${useLunarCalendar ? "_nongli" : ""}.ics`
         ak.style.display = 'none'
         document.body.appendChild(ak)
         ak.click()
