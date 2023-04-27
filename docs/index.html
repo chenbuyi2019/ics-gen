@@ -38,7 +38,12 @@
 
 <body>
     <h1>ics 年度日程批量生成</h1>
-    <p>制作：<a href="https://buyi.dev/" target="_blank">陈布衣</a></p>
+    <p>
+        制作：
+        <a href="https://buyi.dev/" target="_blank">陈布衣</a>
+        <br>
+        <a href="https://github.com/chenbuyi2019/ics-gen" target="_blank">查看源码</a>
+    </p>
     <p>
         请在下面输入事件，一行一个，
         <br>
@@ -63,12 +68,9 @@
         生成多少年的农历事件：<input id="txtYearCount" type="number" min="1" max="50" value="5">
         <br>
         <input id="checkAddLunarDateAfterTitle" type="checkbox">在标题后标注农历日期（不标注就只写在事件描述内）
-    </p>
-    <p>
+        <br>
         <button id="butGenSolar" style="margin-right: 1em;">生成公历</button>
         <button id="butGenLunar">生成农历</button>
-        <br>
-        <a href="https://github.com/chenbuyi2019/ics-gen" target="_blank">查看源码</a>
     </p>
     <p>
         如果你要导入到 iOS 的日历 APP ，建议直接在 Safari 访问本网页，点击生成之后就会直接弹出导入界面。
